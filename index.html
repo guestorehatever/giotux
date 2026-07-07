@@ -8,9 +8,9 @@
   :root{
     --bg: #0a0d0a;
     --bg-raised: #0f1310;
-    --amber: #ffb000;
-    --amber-dim: #a86f00;
-    --amber-faint: #6b4a15;
+    --amber: #4aff6a;
+    --amber-dim: #2f9e46;
+    --amber-faint: #163c22;
     --green: #4aff6a;
     --text: #d8d3c0;
     --text-dim: #7d8a78;
@@ -63,7 +63,7 @@
     padding: 0 24px;
   }
 
-  ::selection{ background: var(--amber); color: #1a1200; }
+  ::selection{ background: var(--amber); color: #04150a; }
 
   /* ---------- Top chrome bar ---------- */
   .chrome{
@@ -111,7 +111,7 @@
     color: var(--amber);
     white-space: pre;
     margin: 18px 0 6px;
-    text-shadow: 0 0 14px rgba(255,176,0,0.35);
+    text-shadow: 0 0 14px rgba(74,255,106,0.35);
     overflow-x: auto;
   }
   .tagline{
@@ -144,7 +144,7 @@
     cursor:pointer;
     transition: background .15s ease, color .15s ease;
   }
-  .btn:hover{ background: var(--amber); color:#1a1200; }
+  .btn:hover{ background: var(--amber); color:#04150a; }
   .btn.primary{ background: var(--amber-faint); }
   .btn.ghost{ border-color: var(--line); color: var(--text-dim); }
   .btn.ghost:hover{ background: var(--line); color: var(--text); }
@@ -208,7 +208,7 @@
   .term{
     border: 1px solid var(--amber-faint);
     background: #050603;
-    box-shadow: 0 0 40px rgba(255,176,0,0.06), inset 0 0 60px rgba(0,0,0,0.5);
+    box-shadow: 0 0 40px rgba(74,255,106,0.06), inset 0 0 60px rgba(0,0,0,0.5);
   }
   .term-bar{
     display:flex; align-items:center; justify-content: space-between;
@@ -375,10 +375,8 @@
       <a class="btn primary" href="https://github.com/guestorehatever/giotux/releases/download/New-Releases/GioTuxInstaller1.0.exe" download>
         ⬇ Download GioTuxInstaller1.0.exe
       </a>
-      <div class="dl-meta">
-        <div><b>Platform</b><br>Windows</div>
-        <div><b>Format</b><br>.exe installer</div>
-        <div><b>Version</b><br>1.0</div>
+      <div class="dl-terminal-line" style="margin-top:20px; border-top:1px solid var(--line); padding-top:18px;">
+        <span class="p">::GTX::&gt;</span> GioTux is ready to get installed <span class="cursor"></span>
       </div>
       <p class="req">Requires Windows with cmd.exe (built in). PowerShell is used for a few extras like ginfo and the fullscreen switch — also built in on any modern Windows install. The gui command needs Python installed separately.</p>
       <p class="req">Looking for older builds or a changelog? See the <a href="releases.html">releases page</a>.</p>
