@@ -3,204 +3,545 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GioTux — a Linux-flavored shell for cmd.exe</title>
-<meta name="description" content="GioTux turns Command Prompt into a themed shell with real Unix-style commands, an admin mode, ADB tools, a tiny app language, and more. Windows only, one .bat file.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<title>GioTux — a whole fake OS living inside cmd.exe</title>
+<style>
+  :root{
+    --bg: #0a0d0a;
+    --bg-raised: #0f1310;
+    --amber: #ffb000;
+    --amber-dim: #a86f00;
+    --amber-faint: #6b4a15;
+    --green: #4aff6a;
+    --text: #d8d3c0;
+    --text-dim: #7d8a78;
+    --line: #24291f;
+    --danger: #ff5c4d;
+    --mono: ui-monospace, "Cascadia Mono", "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* CRT scanline + vignette overlay */
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    pointer-events:none;
+    z-index: 50;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0.10) 3px
+    );
+    mix-blend-mode: multiply;
+    opacity: 0.5;
+  }
+  body::after{
+    content:"";
+    position: fixed; inset:0;
+    pointer-events:none;
+    z-index: 49;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,0.55) 100%);
+  }
+
+  a{ color: var(--amber); }
+
+  .wrap{
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  ::selection{ background: var(--amber); color: #1a1200; }
+
+  /* ---------- Top chrome bar ---------- */
+  .chrome{
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-raised);
+    position: sticky;
+    top:0;
+    z-index: 40;
+  }
+  .chrome-inner{
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 10px 24px;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    font-size: 13px;
+  }
+  .chrome-dots{ display:flex; gap:7px; }
+  .dot{ width:11px; height:11px; border-radius:50%; }
+  .dot.r{ background:#5a2b26; }
+  .dot.y{ background:#5a4a1e; }
+  .dot.g{ background:#26491f; }
+  .chrome-title{ color: var(--text-dim); letter-spacing: 0.5px; }
+  .chrome-nav{ display:flex; gap:20px; }
+  .chrome-nav a{ color: var(--text-dim); text-decoration:none; }
+  .chrome-nav a:hover{ color: var(--amber); }
+  .chrome-nav a.active{ color: var(--amber); }
+
+  /* ---------- Hero / boot sequence ---------- */
+  .hero{
+    padding: 64px 0 40px;
+    border-bottom: 1px solid var(--line);
+  }
+  #boot{
+    white-space: pre-wrap;
+    font-size: 14px;
+    color: var(--text-dim);
+    min-height: 210px;
+  }
+  #boot .ok{ color: var(--green); }
+  .logo{
+    font-size: 10px;
+    line-height: 1.15;
+    color: var(--amber);
+    white-space: pre;
+    margin: 18px 0 6px;
+    text-shadow: 0 0 14px rgba(255,176,0,0.35);
+    overflow-x: auto;
+  }
+  .tagline{
+    font-size: 17px;
+    color: var(--text);
+    margin: 4px 0 26px;
+  }
+  .tagline .prompt{ color: var(--green); }
+  .cursor{
+    display:inline-block;
+    width: 9px; height: 17px;
+    background: var(--amber);
+    vertical-align: -3px;
+    animation: blink 1s step-start infinite;
+  }
+  @keyframes blink{ 50%{ opacity: 0; } }
+
+  .hero-ctas{ display:flex; gap:14px; flex-wrap: wrap; }
+  .btn{
+    font-family: var(--mono);
+    font-size: 14px;
+    padding: 12px 20px;
+    border: 1px solid var(--amber-dim);
+    background: transparent;
+    color: var(--amber);
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .btn:hover{ background: var(--amber); color:#1a1200; }
+  .btn.primary{ background: var(--amber-faint); }
+  .btn.ghost{ border-color: var(--line); color: var(--text-dim); }
+  .btn.ghost:hover{ background: var(--line); color: var(--text); }
+
+  /* ---------- Section framing ---------- */
+  section{ padding: 56px 0; border-bottom: 1px solid var(--line); }
+  .cmdline{
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 22px;
+  }
+  .cmdline .p{ color: var(--green); }
+  .cmdline .a{ color: var(--amber); }
+  h2{
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 6px;
+    letter-spacing: 0.3px;
+  }
+  h2 .num{ color: var(--amber-dim); }
+  .section-sub{ color: var(--text-dim); font-size: 14px; margin: 0 0 30px; }
+
+  /* ---------- Feature listing (ls -la style) ---------- */
+  .filelist{
+    border: 1px solid var(--line);
+    background: var(--bg-raised);
+    font-size: 13.5px;
+  }
+  .frow{
+    display:grid;
+    grid-template-columns: 90px 1fr;
+    gap: 18px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--line);
+    align-items: start;
+  }
+  .frow:last-child{ border-bottom:none; }
+  .frow .perm{ color: var(--text-dim); }
+  .frow .fname{ color: var(--green); font-weight:600; }
+  .frow .fdesc{ color: var(--text); }
+  .frow .fdesc .muted{ color: var(--text-dim); }
+
+  /* ---------- Feature grid cards ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 620px){ .grid{ grid-template-columns: 1fr; } }
+  .card{
+    border: 1px solid var(--line);
+    background: var(--bg-raised);
+    padding: 20px;
+  }
+  .card .tag{ color: var(--amber-dim); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+  .card h3{ margin: 8px 0 8px; font-size: 15.5px; color: var(--green); }
+  .card p{ margin:0; font-size: 13.5px; color: var(--text-dim); }
+
+  /* ---------- Interactive demo terminal ---------- */
+  .term{
+    border: 1px solid var(--amber-faint);
+    background: #050603;
+    box-shadow: 0 0 40px rgba(255,176,0,0.06), inset 0 0 60px rgba(0,0,0,0.5);
+  }
+  .term-bar{
+    display:flex; align-items:center; justify-content: space-between;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .term-body{
+    padding: 16px 18px;
+    height: 300px;
+    overflow-y: auto;
+    font-size: 13.5px;
+  }
+  #term-output div{ white-space: pre-wrap; margin: 0 0 2px; }
+  #term-output .echoline{ color: var(--text); }
+  #term-output .echoline .p{ color: var(--green); }
+  #term-output .out{ color: var(--text-dim); }
+  #term-output .out.hi{ color: var(--amber); }
+  .term-input-row{
+    display:flex; align-items:center; gap:8px;
+    padding: 10px 18px 16px;
+    border-top: 1px solid var(--line);
+  }
+  .term-input-row .p{ color: var(--green); font-size: 13.5px; }
+  #term-input{
+    flex:1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13.5px;
+  }
+  .hint{ font-size: 12px; color: var(--text-dim); margin-top: 12px; }
+  .hint code{ color: var(--amber); }
+
+  /* ---------- Download section ---------- */
+  .dl-box{
+    border: 1px solid var(--amber-faint);
+    background: var(--bg-raised);
+    padding: 30px;
+  }
+  .dl-terminal-line{
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+  .dl-terminal-line .p{ color: var(--green); }
+  .dl-terminal-line .a{ color: var(--amber); }
+  .dl-meta{
+    display:flex; gap: 26px; flex-wrap: wrap;
+    font-size: 12.5px; color: var(--text-dim);
+    margin-top: 18px;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+  .dl-meta b{ color: var(--text); }
+  .req{ font-size: 13px; color: var(--text-dim); margin-top: 18px; }
+
+  footer{
+    padding: 30px 0 60px;
+    color: var(--text-dim);
+    font-size: 12.5px;
+  }
+  footer .p{ color: var(--green); }
+
+  @media (max-width: 620px){
+    .logo{ font-size: 6.5px; }
+    .frow{ grid-template-columns: 70px 1fr; }
+  }
+</style>
 </head>
 <body>
-<div class="crt-overlay" aria-hidden="true"></div>
 
-<header class="titlebar">
-  <div class="titlebar-inner">
-    <div class="dots" aria-hidden="true">
-      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-    </div>
-    <div class="titlebar-path"><b>giotux</b>@localhost:~</div>
-    <nav class="titlebar-nav">
-      <a href="index.html" class="active">home</a>
+<div class="chrome">
+  <div class="chrome-inner">
+    <div class="chrome-dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+    <div class="chrome-title">::GTX::&gt; C:\Users\you</div>
+    <div class="chrome-nav">
+      <a href="#features">features</a>
+      <a href="#try">try it</a>
+      <a href="#download">download</a>
       <a href="releases.html">releases</a>
-      <a href="#download" class="cta">download</a>
-    </nav>
+    </div>
   </div>
-</header>
+</div>
 
-<main>
-  <!-- ============ HERO / BOOT SEQUENCE ============ -->
-  <section class="hero wrap">
-    <div class="boot-log" id="bootLog" aria-live="polite"></div>
+<div class="wrap">
 
-    <pre class="ascii-logo" id="asciiLogo">   █████████   ███           ███████████
+  <section class="hero" style="border-bottom:1px solid var(--line);">
+    <div id="boot"></div>
+  </section>
+
+  <section id="features">
+    <div class="cmdline"><span class="p">::GTX::&gt;</span> <span class="a">ls</span> -la features/</div>
+    <h2><span class="num">01</span> &nbsp;What it actually is</h2>
+    <p class="section-sub">GioTux boots inside a normal Windows console and turns it into its own little operating system — a persistent shell with a real command set, its own app format, and a couple of modes to drop back into Windows when you need to.</p>
+    <div class="filelist">
+      <div class="frow"><span class="perm">drwxr-xr-x</span><span class="fdesc"><span class="fname">core-shell</span> — <span class="muted">a persistent</span> ::GTX::&gt; prompt with <span class="muted">ls, cd, mkdir, rm, cp, mv, cat, nano, touch, find, grep</span> and more, working against your real filesystem.</span></div>
+      <div class="frow"><span class="perm">drwxr-xr-x</span><span class="fdesc"><span class="fname">system-tools</span> — <span class="muted">whoami, hostname, uptime, ps, kill, df, ping, ipconfig,</span> and <span class="fname">ginfo</span>, a full-screen system dashboard.</span></div>
+      <div class="frow"><span class="perm">drwxr-xr-x</span><span class="fdesc"><span class="fname">.gtux apps</span> — <span class="muted">a tiny scripting format</span> (echo, set, calc, random, input, if/goto, pause…) that <span class="fname">run</span> executes like installed programs. <span class="fname">apps</span> lists what you've got.</span></div>
+      <div class="frow"><span class="perm">drwxr-xr-x</span><span class="fdesc"><span class="fname">games/</span> — <span class="muted">drop a batch game in the folder next to GioTux and launch it with</span> <span class="fname">game [file]</span> in its own window.</span></div>
+      <div class="frow"><span class="perm">drwxr-xr-x</span><span class="fdesc"><span class="fname">admin mode</span> — <span class="muted">an optional, passcode-locked layer for disk checks, ownership/permissions, env repair, and other real Windows admin actions — passcode is encrypted and tied to your Windows account.</span></div>
+      <div class="frow"><span class="perm">drwxr-xr-x</span><span class="fdesc"><span class="fname">cmd / gui</span> — <span class="muted">drop into a real, unmodified DOS-style console with</span> <span class="fname">cmd</span>, <span class="muted">or launch the</span> <span class="fname">gui</span> <span class="muted">desktop if you've got the Python side installed.</span></div>
+      <div class="frow"><span class="perm">-rwxr-xr-x</span><span class="fdesc"><span class="fname">bits and pieces</span> — <span class="muted">cowsay, fortune, matrix rain, a customizable color scheme that persists across sessions, command history, and a Konami code if you know where to look.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="cmdline"><span class="p">::GTX::&gt;</span> <span class="a">cat</span> why.txt</div>
+    <h2><span class="num">02</span> &nbsp;Why it exists</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="tag">No install weirdness</div>
+        <h3>It's just cmd.exe, dressed up</h3>
+        <p>Nothing gets replaced. GioTux takes over a console window, runs a shell loop on top of your real file system, and hands control back cleanly on exit. Under the hood it's still your machine.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Actually useful commands</div>
+        <h3>Not just a skin</h3>
+        <p>ls, cd, grep, find and friends do real work against real files — this isn't a static screensaver pretending to be a terminal, the commands run.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Make it yours</div>
+        <h3>Colors, apps, games</h3>
+        <p>Save a color scheme once and it sticks. Write a .gtux app in a few lines. Drop a batch game in the games folder and it shows up as a command.</p>
+      </div>
+      <div class="card">
+        <div class="tag">A safety net</div>
+        <h3>cmd mode and admin mode</h3>
+        <p>Need the real console back? <code>cmd</code> drops you into an unmodified DOS-style window. Need to actually fix something? Passcode-locked admin mode gives you the real tools, on purpose.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="try">
+    <div class="cmdline"><span class="p">::GTX::&gt;</span> <span class="a">run</span> demo.gtux</div>
+    <h2><span class="num">03</span> &nbsp;Try the shell right here</h2>
+    <p class="section-sub">This is a small simulation of the real prompt, running in your browser — not the actual GioTux binary. Type a command below.</p>
+    <div class="term">
+      <div class="term-bar">
+        <span>GioTux — demo shell</span>
+        <span id="term-cwd">C:\Users\you</span>
+      </div>
+      <div class="term-body" id="term-body">
+        <div id="term-output"></div>
+      </div>
+      <div class="term-input-row">
+        <span class="p">::GTX::&gt;</span>
+        <input id="term-input" type="text" autocomplete="off" spellcheck="false" placeholder="try: help, ls, whoami, cowsay hi, fortune, matrix" />
+      </div>
+    </div>
+    <p class="hint">Try <code>help</code>, <code>ls</code>, <code>whoami</code>, <code>ginfo</code>, <code>cowsay [text]</code>, <code>fortune</code>, <code>matrix</code>, or <code>sudo</code>.</p>
+  </section>
+
+  <section id="download">
+    <div class="cmdline"><span class="p">::GTX::&gt;</span> <span class="a">curl</span> -O GioTuxInstaller1.0.exe</div>
+    <h2><span class="num">04</span> &nbsp;Get GioTux</h2>
+    <div class="dl-box">
+      <div class="dl-terminal-line">
+        <span class="p">::GTX::&gt;</span> ready to download <span class="a">GioTuxInstaller1.0.exe</span> <span class="cursor"></span>
+      </div>
+      <a class="btn primary" href="https://github.com/guestorehatever/giotux/releases/download/New-Releases/GioTuxInstaller1.0.exe" download>
+        ⬇ Download GioTuxInstaller1.0.exe
+      </a>
+      <div class="dl-meta">
+        <div><b>Platform</b><br>Windows</div>
+        <div><b>Format</b><br>.exe installer</div>
+        <div><b>Version</b><br>1.0</div>
+      </div>
+      <p class="req">Requires Windows with cmd.exe (built in). PowerShell is used for a few extras like ginfo and the fullscreen switch — also built in on any modern Windows install. The gui command needs Python installed separately.</p>
+      <p class="req">Looking for older builds or a changelog? See the <a href="releases.html">releases page</a>.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span class="p">::GTX::&gt;</span> shutdown<br>
+    Logging out of GioTux... session ended. Come back any time.
+  </footer>
+
+</div>
+
+<script>
+// ---------------- Boot sequence ----------------
+const bootLines = [
+  { text: "GioTux booting...", delay: 400 },
+  { text: "Mounting filesystem... OK", ok: true, delay: 350 },
+  { text: "Loading drivers... OK", ok: true, delay: 350 },
+  { text: "Starting shell...", delay: 350 },
+  { text: "Adding custom theme...", delay: 350 },
+];
+
+const logoArt = `   █████████   ███           ███████████
   ███▒▒▒▒▒███ ▒▒▒           ▒█▒▒▒███▒▒▒█
  ███     ▒▒▒  ████   ██████ ▒   ▒███  ▒  █████ ████ █████ █████
 ▒███         ▒▒███  ███▒▒███    ▒███    ▒▒███ ▒███ ▒▒███ ▒▒███
 ▒███    █████ ▒███ ▒███ ▒███    ▒███     ▒███ ▒███  ▒▒▒█████▒
 ▒▒███  ▒▒███  ▒███ ▒███ ▒███    ▒███     ▒███ ▒███   ███▒▒▒███
  ▒▒█████████  █████▒▒██████     █████    ▒▒████████ █████ █████
-  ▒▒▒▒▒▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒▒▒     ▒▒▒▒▒      ▒▒▒▒▒▒▒▒ ▒▒▒▒▒ ▒▒▒▒▒</pre>
-    <div class="ascii-logo-mobile" id="asciiLogoMobile" style="opacity:0; transition:opacity .5s ease;">
-      <span style="font-family:var(--font-display); font-weight:700; font-size:28px; color:var(--green); text-shadow:0 0 10px rgba(61,220,132,.35);">GioTux</span>
-    </div>
+ ▒▒▒▒▒▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒▒▒     ▒▒▒▒▒      ▒▒▒▒▒▒▒▒ ▒▒▒▒▒ ▒▒▒▒▒`;
 
-    <p class="version-line" id="versionLine">GioTux [version <span class="ver">1.0</span>]<br>Type 'help' for a list of commands.</p>
+const bootEl = document.getElementById('boot');
 
-    <h1 class="hero-tagline" id="heroTagline">A <span class="accent">Linux-flavored shell</span> living quietly inside cmd.exe.</h1>
-    <p class="hero-sub" id="heroSub">One batch file boots into a themed prompt, a full set of Unix-style commands, and real system controls underneath — no VM, no fake OS install, just Windows doing tricks it didn't know it could do.</p>
-    <div class="hero-ctas" id="heroCtas">
-      <a class="btn btn-primary" href="GioTuxInstaller1.0.exe" download>Download GioTuxInstaller1.0.exe</a>
-      <a class="btn btn-ghost" href="releases.html">View releases</a>
-    </div>
-  </section>
+function typeBoot(i) {
+  if (i >= bootLines.length) {
+    const logo = document.createElement('div');
+    logo.className = 'logo';
+    logo.textContent = logoArt;
+    bootEl.appendChild(logo);
 
-  <!-- ============ WHAT IT DOES ============ -->
-  <section class="wrap" id="what">
-    <p class="prompt-label"><span class="tag">::GTX::></span> <span class="cmd">cat README</span></p>
-    <h2 class="section-title">What GioTux actually is</h2>
-    <p class="section-lede">No installer runs a hidden virtual machine here. It's Command Prompt, reskinned and extended, still talking to the real Windows underneath.</p>
-    <div class="prose-panel">
-      <p>Double-click <code class="inline-code">GioTux.bat</code> and it boots like a small OS: mounting a "filesystem," loading "drivers," dropping a custom theme on the window, then expanding to fill the screen so the illusion holds. What's left is a <code class="inline-code">::GTX::></code> prompt that behaves like a Unix shell — <code class="inline-code">ls</code>, <code class="inline-code">cd</code>, <code class="inline-code">cat</code>, <code class="inline-code">grep</code>, and friends all work the way you'd expect.</p>
-      <p>Underneath, it's still your machine. <code class="inline-code">ps</code> and <code class="inline-code">kill</code> talk to real processes, <code class="inline-code">ipconfig</code> reads your real network, and typing <code class="inline-code">cmd</code> drops you into an unmodified console session with GioTux's commands still layered on top. Type <code class="inline-code">exit</code> and it logs out cleanly, no trace left behind beyond a small color-preference file.</p>
-      <p>It also doesn't take itself too seriously — there's a fortune-cookie command, a cowsay, a fake "hacking" sequence, and at least one thing we're not going to explain here. You'll have to find it.</p>
-    </div>
-  </section>
+    const tag = document.createElement('div');
+    tag.className = 'tagline';
+    tag.innerHTML = 'GioTux [version 1.0] — <span class="prompt">a terminal that runs your Windows machine like an OS of its own.</span><span class="cursor"></span>';
+    bootEl.appendChild(tag);
 
-  <!-- ============ FEATURES ============ -->
-  <section class="wrap" id="features">
-    <p class="prompt-label"><span class="tag">::GTX::></span> <span class="cmd">help</span></p>
-    <h2 class="section-title">Available commands</h2>
-    <p class="section-lede">Everything below runs from the same prompt. No menus to dig through — just type.</p>
+    const ctas = document.createElement('div');
+    ctas.className = 'hero-ctas';
+    ctas.innerHTML = `
+      <a class="btn primary" href="https://github.com/guestorehatever/giotux/releases/download/New-Releases/GioTuxInstaller1.0.exe" download>⬇ Download GioTuxInstaller1.0.exe</a>
+      <a class="btn ghost" href="#try">try the shell →</a>
+      <a class="btn ghost" href="releases.html">all releases →</a>
+    `;
+    bootEl.appendChild(ctas);
+    return;
+  }
+  const line = bootLines[i];
+  const div = document.createElement('div');
+  div.textContent = line.text;
+  if (line.ok) {
+    const idx = line.text.lastIndexOf('OK');
+    div.innerHTML = line.text.slice(0, idx) + '<span class="ok">OK</span>';
+  }
+  bootEl.appendChild(div);
+  setTimeout(() => typeBoot(i + 1), line.delay);
+}
+typeBoot(0);
 
-    <div class="feature-grid">
+// ---------------- Demo terminal ----------------
+const out = document.getElementById('term-output');
+const input = document.getElementById('term-input');
+const body = document.getElementById('term-body');
+const cwdEl = document.getElementById('term-cwd');
 
-      <div class="feature-card">
-        <div class="fc-head"><span class="fc-prompt">#</span><h3>Shell &amp; files</h3></div>
-        <ul>
-          <li><span class="k">ls / list / dir</span> browse the current folder</li>
-          <li><span class="k">cd, pwd</span> move around and check where you are</li>
-          <li><span class="k">mkdir, rmdir</span> create or remove directories</li>
-          <li><span class="k">touch, rm, cp, mv</span> the usual file operations</li>
-          <li><span class="k">cat, grep, find</span> read, search, and locate files</li>
-          <li><span class="k">nano / vi</span> a simple built-in text editor</li>
-        </ul>
-      </div>
+const fortunes = [
+  "A clean prompt is a clean mind.",
+  "There are only two hard problems in computer science: naming things, off-by-one errors, and cache invalidation.",
+  "Somewhere, a semicolon is missing.",
+  "gio: the terminal has been GioTux'd.",
+  "You will encounter a bug today. It was always going to be a semicolon.",
+];
 
-      <div class="feature-card">
-        <div class="fc-head"><span class="fc-prompt">#</span><h3>System info</h3></div>
-        <ul>
-          <li><span class="k">ps, kill</span> list and stop running processes</li>
-          <li><span class="k">whoami, hostname</span> user and machine identity</li>
-          <li><span class="k">uptime, date</span> how long it's been running</li>
-          <li><span class="k">df, ping, ipconfig</span> disk space and network</li>
-          <li><span class="k">ginfo</span> full-screen system readout — OS, CPU, GPU, RAM, plus a live color test</li>
-        </ul>
-      </div>
+function printLine(html, cls) {
+  const div = document.createElement('div');
+  div.className = cls || 'out';
+  div.innerHTML = html;
+  out.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+}
 
-      <div class="feature-card">
-        <div class="fc-head"><span class="fc-prompt">#</span><h3>Admin mode <span class="badge">real controls</span></h3></div>
-        <ul>
-          <li><span class="k">admin</span> unlock system-level commands, confirmation required</li>
-          <li><span class="k">services, firewall</span> start/stop services, toggle the firewall</li>
-          <li><span class="k">repair, checkdisk</span> run sfc, DISM, and disk checks</li>
-          <li><span class="k">setpass</span> lock admin mode behind an encrypted passcode tied to your Windows account</li>
-        </ul>
-        <p class="fc-note">Every destructive action asks before it runs. Nothing fires silently.</p>
-      </div>
+function cowsay(text) {
+  const t = text && text.length ? text : "moo";
+  const border = '-'.repeat(t.length + 2);
+  return ` ${border}\n< ${t} >\n ${border}\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||`;
+}
 
-      <div class="feature-card">
-        <div class="fc-head"><span class="fc-prompt">#</span><h3>ADB / Fastboot mode</h3></div>
-        <ul>
-          <li><span class="k">adb</span> drop into a dedicated Android device console</li>
-          <li><span class="k">install, push, pull</span> manage apps and files on a connected device</li>
-          <li><span class="k">fastboot ...</span> flash partitions, read bootloader vars, reboot</li>
-        </ul>
-        <p class="fc-note">Points at your existing platform-tools install — offers to fetch it if it can't find one.</p>
-      </div>
+const responses = {
+  help: () => `Available commands:
+  ls / list        list files in current directory
+  pwd               show current directory
+  whoami            show current user
+  hostname          show computer name
+  ginfo             full-screen system info
+  cowsay [text]     a cow says your text
+  fortune           random GioTux fortune cookie
+  matrix            matrix rain in the terminal
+  sudo              try it and see
+  clear / cls       clear the screen
+  exit              log out of this demo`,
+  ls: () => `Documents/   Downloads/   Desktop/\ngiotux_notes.txt   .giotux_colors.cfg`,
+  list: () => responses.ls(),
+  pwd: () => cwdEl.textContent,
+  whoami: () => "you",
+  hostname: () => "YOUR-PC",
+  ginfo: () => `GioTux System Info\n------------------\nOS: GioTux over Windows\nUptime: it's been a while\nShell: ::GTX::>\nStatus: theoretically fine`,
+  fortune: () => fortunes[Math.floor(Math.random() * fortunes.length)],
+  matrix: () => "01001101 01100001 01110100 01110010 01101001 01111000\n(imagine this raining down the screen in green)",
+  sudo: () => "gio: nice try. this is a browser demo, not your machine.",
+  clear: () => "__CLEAR__",
+  cls: () => "__CLEAR__",
+  exit: () => "Logging out of GioTux...\n(refresh the page to start over)",
+};
 
-      <div class="feature-card">
-        <div class="fc-head"><span class="fc-prompt">#</span><h3>Apps, games &amp; GUI</h3></div>
-        <ul>
-          <li><span class="k">run [app]</span> execute a <code class="inline-code">.gtux</code> app — a tiny scripting language with variables, input, and if/goto</li>
-          <li><span class="k">game [file]</span> launch a batch game from a local games folder in its own window</li>
-          <li><span class="k">gui</span> open the companion Python desktop</li>
-        </ul>
-      </div>
+function handleCommand(raw) {
+  const trimmed = raw.trim();
+  if (!trimmed) return;
+  printLine(`<span class="p">::GTX::&gt;</span> ${escapeHtml(trimmed)}`, 'echoline');
 
-      <div class="feature-card">
-        <div class="fc-head"><span class="fc-prompt">#</span><h3>DOS mode &amp; theming</h3></div>
-        <ul>
-          <li><span class="k">cmd</span> switch to a real, unmodified console — GioTux commands still work alongside it</li>
-          <li><span class="k">customize</span> set your own background/text colors, saved permanently</li>
-          <li><span class="k">customize default</span> reset back to the classic look</li>
-        </ul>
-      </div>
+  const [cmdRaw, ...rest] = trimmed.split(' ');
+  const cmd = cmdRaw.toLowerCase();
+  const args = rest.join(' ');
 
-      <div class="feature-card wide">
-        <div class="fc-head"><span class="fc-prompt">#</span><h3>Just for fun</h3></div>
-        <ul style="display:grid; grid-template-columns:repeat(2,1fr); gap:2px 20px;">
-          <li><span class="k">cowsay</span> a cow says whatever you type</li>
-          <li><span class="k">fortune</span> a random developer fortune cookie</li>
-          <li><span class="k">matrix</span> ambient rain in the terminal</li>
-          <li><span class="k">sudo</span> pretend to grant yourself power</li>
-          <li><span class="k">hack [target]</span> a harmless fake breach sequence</li>
-          <li><span class="k">???</span> there's a hidden command. Good luck.</li>
-        </ul>
-      </div>
+  if (cmd === 'cowsay') {
+    printLine(escapeHtml(cowsay(args)), 'out hi');
+    return;
+  }
+  if (responses[cmd]) {
+    const result = responses[cmd]();
+    if (result === '__CLEAR__') {
+      out.innerHTML = '';
+      return;
+    }
+    printLine(escapeHtml(result), cmd === 'fortune' || cmd === 'matrix' ? 'out hi' : 'out');
+    return;
+  }
+  printLine(`gio: command not found: ${escapeHtml(cmd)}`, 'out');
+}
 
-    </div>
-  </section>
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 
-  <!-- ============ INTERACTIVE DEMO ============ -->
-  <section class="wrap" id="demo">
-    <p class="prompt-label"><span class="tag">::GTX::></span> <span class="cmd">demo --no-install</span></p>
-    <h2 class="section-title">Try the prompt right here</h2>
-    <p class="section-lede">A stripped-down preview running in your browser. The real thing has a lot more behind it.</p>
+printLine('Type <span style="color:var(--amber)">help</span> to see what this demo can do.', 'out');
 
-    <div class="term-demo">
-      <div class="term-demo-bar">
-        <span class="dots" style="display:flex;gap:6px;"><span class="dot red" style="width:9px;height:9px;"></span><span class="dot yellow" style="width:9px;height:9px;"></span><span class="dot green" style="width:9px;height:9px;"></span></span>
-        giotux-demo — browser preview
-      </div>
-      <div class="term-demo-body" id="demoBody">
-        <p class="out dim">GioTux [version 1.0] — browser demo</p>
-        <p class="out dim">Type 'help' to see what's wired up.</p>
-      </div>
-      <form class="term-demo-form" id="demoForm">
-        <span class="tag">::GTX::>&nbsp;</span>
-        <input id="demoInput" type="text" autocomplete="off" spellcheck="false" aria-label="Demo terminal input" placeholder="try: help">
-      </form>
-    </div>
-    <p class="term-demo-hint">Try <code class="inline-code">help</code>, <code class="inline-code">whoami</code>, <code class="inline-code">fortune</code>, <code class="inline-code">cowsay [text]</code>, <code class="inline-code">ginfo</code>, or <code class="inline-code">download</code>.</p>
-  </section>
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    handleCommand(input.value);
+    input.value = '';
+  }
+});
 
-  <!-- ============ DOWNLOAD ============ -->
-  <section class="wrap" id="download">
-    <p class="prompt-label"><span class="tag">::GTX::></span> <span class="cmd">download giotux</span></p>
-    <h2 class="section-title">Get GioTux</h2>
-    <div class="download-panel">
-      <div class="download-info">
-        <h3>GioTux <span style="color:var(--text-dim);">v1.0</span></h3>
-        <div>Installer file: <span class="fname">GioTuxInstaller1.0.exe</span></div>
-        <div class="download-meta">
-          <span>Platform: <b>Windows</b></span>
-          <span>Requires: <b>cmd.exe</b> (PowerShell used for a few features)</span>
-          <span>Version: <b>1.0</b> — initial release</span>
-        </div>
-        <p class="download-req">Some commands (admin mode, ADB/fastboot, the GUI desktop) reach for tools already on your system — Windows itself, an ADB/platform-tools install, or Python — and tell you plainly if one isn't found.</p>
-      </div>
-      <a class="btn btn-primary" href="GioTuxInstaller1.0.exe" download style="flex-shrink:0;">Download GioTuxInstaller1.0.exe</a>
-    </div>
-  </section>
-</main>
+document.querySelector('.term').addEventListener('click', () => input.focus());
+</script>
 
-<footer class="wrap">
-  <div class="footer-row">
-    <span>GioTux — a themed shell for Windows, built out of batch and a little PowerShell.</span>
-    <span><a href="releases.html">Changelog &amp; past versions</a></span>
-  </div>
-</footer>
-
-<script src="script.js"></script>
 </body>
 </html>
