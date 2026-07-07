@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GioTux — a whole fake OS living inside cmd.exe</title>
+<title>GioTux — a terminal-driven OS experience for Windows</title>
 <style>
   :root{
     --bg: #0a0d0a;
@@ -306,7 +306,7 @@
   <section id="features">
     <div class="cmdline"><span class="p">::GTX::&gt;</span> <span class="a">ls</span> -la features/</div>
     <h2><span class="num">01</span> &nbsp;What it actually is</h2>
-    <p class="section-sub">GioTux boots inside a normal Windows console and turns it into its own little operating system — a persistent shell with a real command set, its own app format, and a couple of modes to drop back into Windows when you need to.</p>
+    <p class="section-sub">GioTux boots straight into its own shell environment — a persistent command set, its own app format, and a couple of modes to drop back into standard Windows tools when you need them.</p>
     <div class="filelist">
       <div class="frow"><span class="perm">drwxr-xr-x</span><span class="fdesc"><span class="fname">core-shell</span> — <span class="muted">a persistent</span> ::GTX::&gt; prompt with <span class="muted">ls, cd, mkdir, rm, cp, mv, cat, nano, touch, find, grep</span> and more, working against your real filesystem.</span></div>
       <div class="frow"><span class="perm">drwxr-xr-x</span><span class="fdesc"><span class="fname">system-tools</span> — <span class="muted">whoami, hostname, uptime, ps, kill, df, ping, ipconfig,</span> and <span class="fname">ginfo</span>, a full-screen system dashboard.</span></div>
@@ -324,13 +324,13 @@
     <div class="grid">
       <div class="card">
         <div class="tag">No install weirdness</div>
-        <h3>It's just cmd.exe, dressed up</h3>
-        <p>Nothing gets replaced. GioTux takes over a console window, runs a shell loop on top of your real file system, and hands control back cleanly on exit. Under the hood it's still your machine.</p>
+        <h3>Runs right on your machine</h3>
+        <p>GioTux takes over a console window and runs a real shell loop on top of your actual file system, with nothing replaced behind the scenes. Exit cleanly, and you're back to normal.</p>
       </div>
       <div class="card">
         <div class="tag">Actually useful commands</div>
         <h3>Not just a skin</h3>
-        <p>ls, cd, grep, find and friends do real work against real files — this isn't a static screensaver pretending to be a terminal, the commands run.</p>
+        <p>ls, cd, grep, find and friends do real work against real files — these aren't static text on screen, the commands actually run.</p>
       </div>
       <div class="card">
         <div class="tag">Make it yours</div>
@@ -348,10 +348,10 @@
   <section id="try">
     <div class="cmdline"><span class="p">::GTX::&gt;</span> <span class="a">run</span> demo.gtux</div>
     <h2><span class="num">03</span> &nbsp;Try the shell right here</h2>
-    <p class="section-sub">This is a small simulation of the real prompt, running in your browser — not the actual GioTux binary. Type a command below.</p>
+    <p class="section-sub">A preview of the prompt, right here in your browser. Type a command below.</p>
     <div class="term">
       <div class="term-bar">
-        <span>GioTux — demo shell</span>
+        <span>GioTux — live preview</span>
         <span id="term-cwd">C:\Users\you</span>
       </div>
       <div class="term-body" id="term-body">
@@ -485,7 +485,7 @@ const responses = {
   matrix            matrix rain in the terminal
   sudo              try it and see
   clear / cls       clear the screen
-  exit              log out of this demo`,
+  exit              log out`,
   ls: () => `Documents/   Downloads/   Desktop/\ngiotux_notes.txt   .giotux_colors.cfg`,
   list: () => responses.ls(),
   pwd: () => cwdEl.textContent,
@@ -493,11 +493,11 @@ const responses = {
   hostname: () => "YOUR-PC",
   ginfo: () => `GioTux System Info\n------------------\nOS: GioTux over Windows\nUptime: it's been a while\nShell: ::GTX::>\nStatus: theoretically fine`,
   fortune: () => fortunes[Math.floor(Math.random() * fortunes.length)],
-  matrix: () => "01001101 01100001 01110100 01110010 01101001 01111000\n(imagine this raining down the screen in green)",
-  sudo: () => "gio: nice try. this is a browser demo, not your machine.",
+  matrix: () => Array.from({length: 5}, () => Array.from({length: 40}, () => Math.round(Math.random())).join('')).join('\n'),
+  sudo: () => "gio: sudo what? you have no power here.",
   clear: () => "__CLEAR__",
   cls: () => "__CLEAR__",
-  exit: () => "Logging out of GioTux...\n(refresh the page to start over)",
+  exit: () => "Logging out of GioTux...",
 };
 
 function handleCommand(raw) {
@@ -529,7 +529,7 @@ function escapeHtml(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-printLine('Type <span style="color:var(--amber)">help</span> to see what this demo can do.', 'out');
+printLine('Type <span style="color:var(--amber)">help</span> to see what\'s wired up here.', 'out');
 
 input.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
