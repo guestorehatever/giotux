@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Releases — GioTux</title>
+<meta name="description" content="GioTux release history and downloads.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="crt-overlay" aria-hidden="true"></div>
+
+<header class="titlebar">
+  <div class="titlebar-inner">
+    <div class="dots" aria-hidden="true">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+    </div>
+    <div class="titlebar-path"><b>giotux</b>@localhost:~/releases</div>
+    <nav class="titlebar-nav">
+      <a href="index.html">home</a>
+      <a href="releases.html" class="active">releases</a>
+      <a href="index.html#download" class="cta">download</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="wrap" style="padding-top:56px;">
+    <p class="prompt-label"><span class="tag">::GTX::></span> <span class="cmd">cat CHANGELOG.md</span></p>
+    <h2 class="section-title">Releases</h2>
+    <p class="section-lede">Every version of GioTux, what changed, and a direct download for that build.</p>
+
+    <div class="release-entry">
+      <div class="release-head">
+        <h3>v1.0</h3>
+        <span class="release-tag">current</span>
+        <span class="release-date">Initial release</span>
+      </div>
+      <div class="release-body">
+        <p class="lead">First public release of GioTux.</p>
+        <ul>
+          <li>Boots straight into the <code class="inline-code">::GTX::></code> shell — filesystem/driver "loading" sequence, fullscreen takeover, and a custom color theme.</li>
+          <li>Full set of Unix-style file commands: <code class="inline-code">ls</code>, <code class="inline-code">cd</code>, <code class="inline-code">cat</code>, <code class="inline-code">grep</code>, <code class="inline-code">find</code>, <code class="inline-code">nano</code>, and more.</li>
+          <li>System tools — <code class="inline-code">ps</code>, <code class="inline-code">kill</code>, <code class="inline-code">df</code>, <code class="inline-code">ipconfig</code>, and a full-screen <code class="inline-code">ginfo</code> readout.</li>
+          <li>Admin mode with real system controls (services, firewall, disk repair, DISM, permissions) behind a confirmation step and an optional encrypted passcode.</li>
+          <li>Dedicated ADB / Fastboot console for Android devices.</li>
+          <li>A tiny <code class="inline-code">.gtux</code> app language (variables, input, conditionals) plus a <code class="inline-code">game</code> command for local batch games.</li>
+          <li>Companion Python GUI desktop, launched with <code class="inline-code">gui</code>.</li>
+          <li><code class="inline-code">cmd</code> for a real, unmodified DOS-mode console with GioTux commands still available.</li>
+          <li>Permanent color customization via <code class="inline-code">customize</code>.</li>
+          <li>Assorted nonsense: <code class="inline-code">cowsay</code>, <code class="inline-code">fortune</code>, <code class="inline-code">matrix</code>, <code class="inline-code">sudo</code>, <code class="inline-code">hack</code>, and one command we're not listing here.</li>
+        </ul>
+      </div>
+      <div class="release-actions">
+        <a class="btn btn-primary" href="GioTuxInstaller1.0.exe" download>Download GioTuxInstaller1.0.exe</a>
+        <span class="release-file">Windows · requires cmd.exe</span>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<footer class="wrap">
+  <div class="footer-row">
+    <span>GioTux — a themed shell for Windows, built out of batch and a little PowerShell.</span>
+    <span><a href="index.html">Back to home</a></span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
