@@ -170,6 +170,42 @@
   .faq-item .a-body ul{ margin: 6px 0; padding-left: 20px; }
   .faq-item .a-body li{ margin: 4px 0; }
 
+  /* ---------- Command reference table ---------- */
+  .ref-group{ margin-bottom: 26px; }
+  .ref-group:last-child{ margin-bottom:0; }
+  .ref-group h3{
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin: 0 0 10px;
+    font-weight: 500;
+  }
+  table.ref{
+    width:100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.ref tr{ border-bottom: 1px solid var(--line); }
+  table.ref tr:last-child{ border-bottom:none; }
+  table.ref td{
+    padding: 7px 10px 7px 0;
+    vertical-align: top;
+    color: var(--text-dim);
+  }
+  table.ref td.cmd{
+    width: 30%;
+    white-space: nowrap;
+    color: var(--amber);
+    font-size: 12.5px;
+  }
+  table.ref td.cmd code{
+    color: var(--amber);
+    background: rgba(74,255,106,0.06);
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+
   footer{
     padding: 30px 0 60px;
     color: var(--text-dim);
@@ -405,6 +441,137 @@
         <p>No — the core shell works fully offline. A couple of specific commands reach out to the network on purpose: <code>ping</code> (obviously), the ADB download link if platform-tools isn't found, and the hidden easter egg's final step, which fetches a small ASCII animation if <code>curl</code> is available.</p>
       </div>
     </details>
+  </section>
+
+  <section>
+    <h2>Full command reference</h2>
+    <p class="lede" style="margin-bottom:24px;">Every command GioTux understands, grouped by where you'd type it. Run <code>help</code>, <code>admin help</code>, or <code>adb</code> → <code>help</code> in-app for the same lists live.</p>
+
+    <div class="ref-group">
+      <h3>Main shell</h3>
+      <table class="ref">
+        <tr><td class="cmd"><code>ls</code> / <code>list</code></td><td>List files in the current directory.</td></tr>
+        <tr><td class="cmd"><code>dir</code></td><td>Show the directory you're currently in (use <code>list</code> to see files).</td></tr>
+        <tr><td class="cmd"><code>pwd</code></td><td>Print the current working directory.</td></tr>
+        <tr><td class="cmd"><code>cd [path]</code></td><td>Change directory; no path returns you to your user folder.</td></tr>
+        <tr><td class="cmd"><code>mkdir [name]</code></td><td>Create a new directory.</td></tr>
+        <tr><td class="cmd"><code>rmdir [name]</code></td><td>Remove an empty directory; add <code>-r</code> to remove one with contents.</td></tr>
+        <tr><td class="cmd"><code>touch [file]</code></td><td>Create a new empty file.</td></tr>
+        <tr><td class="cmd"><code>rm [file]</code></td><td>Delete a file; add <code>-r</code> to delete a folder and its contents.</td></tr>
+        <tr><td class="cmd"><code>cp [src] [dst]</code></td><td>Copy a file to a new location or name.</td></tr>
+        <tr><td class="cmd"><code>mv [src] [dst]</code></td><td>Move or rename a file.</td></tr>
+        <tr><td class="cmd"><code>cat [file]</code></td><td>Print a file's contents to the screen.</td></tr>
+        <tr><td class="cmd"><code>echo [text]</code></td><td>Print text back to the screen.</td></tr>
+        <tr><td class="cmd"><code>nano [file]</code> / <code>vi [file]</code></td><td>Open the file in the bundled text editor.</td></tr>
+        <tr><td class="cmd"><code>clear</code> / <code>cls</code></td><td>Clear the screen.</td></tr>
+        <tr><td class="cmd"><code>ps</code></td><td>List running processes.</td></tr>
+        <tr><td class="cmd"><code>kill [PID]</code></td><td>Force-kill a process by its process ID.</td></tr>
+        <tr><td class="cmd"><code>whoami</code></td><td>Show the current Windows username.</td></tr>
+        <tr><td class="cmd"><code>hostname</code></td><td>Show the computer's network name.</td></tr>
+        <tr><td class="cmd"><code>date</code></td><td>Show the current date and time.</td></tr>
+        <tr><td class="cmd"><code>uptime</code></td><td>Show how long the computer has been running since last boot.</td></tr>
+        <tr><td class="cmd"><code>ginfo</code></td><td>Full-screen system dashboard: OS, hostname, terminal, user, CPU, GPU, memory, and a live color test. Press ENTER to return.</td></tr>
+        <tr><td class="cmd"><code>df</code></td><td>Show free/total disk space for every drive.</td></tr>
+        <tr><td class="cmd"><code>ping [host]</code></td><td>Ping a hostname or IP address.</td></tr>
+        <tr><td class="cmd"><code>ipconfig</code> / <code>ifconfig</code></td><td>Show network adapter configuration.</td></tr>
+        <tr><td class="cmd"><code>open [file/app]</code></td><td>Open a file or program with its default Windows app.</td></tr>
+        <tr><td class="cmd"><code>grep [text] [file]</code></td><td>Search for text inside a file.</td></tr>
+        <tr><td class="cmd"><code>find [name]</code></td><td>Find files by name, searching from the current directory down.</td></tr>
+        <tr><td class="cmd"><code>history</code></td><td>Show your command history for this session.</td></tr>
+        <tr><td class="cmd"><code>apps</code></td><td>List installed <code>.gtux</code> apps found next to GioTux or in the current folder.</td></tr>
+        <tr><td class="cmd"><code>run [app]</code></td><td>Run a <code>.gtux</code> app (or just type the app's name directly).</td></tr>
+        <tr><td class="cmd"><code>game [file]</code></td><td>Launch a batch game from the <code>games\</code> folder in its own window.</td></tr>
+        <tr><td class="cmd"><code>adb</code></td><td>Enter ADB/Fastboot mode (or run <code>adb [args]</code> to fire a single command directly).</td></tr>
+        <tr><td class="cmd"><code>customize</code></td><td>Interactively pick and permanently save a background/text color pair.</td></tr>
+        <tr><td class="cmd"><code>customize default</code></td><td>Reset colors to the default light-green-on-black.</td></tr>
+        <tr><td class="cmd"><code>gui</code></td><td>Launch the companion Python GUI desktop (<code>giotux_gui.py</code>), if present.</td></tr>
+        <tr><td class="cmd"><code>cmd</code></td><td>Enter DOS Mode — a real black-and-white console where native Windows commands run directly alongside GioTux's own.</td></tr>
+        <tr><td class="cmd"><code>cowsay [text]</code></td><td>An ASCII cow says whatever text you give it.</td></tr>
+        <tr><td class="cmd"><code>fortune</code></td><td>Print a random developer-flavored fortune.</td></tr>
+        <tr><td class="cmd"><code>matrix</code></td><td>Falling-character "digital rain" animation; Ctrl+C to stop.</td></tr>
+        <tr><td class="cmd"><code>sudo [cmd]</code></td><td>Joke command — prints a fake password prompt, then just runs the command anyway.</td></tr>
+        <tr><td class="cmd"><code>hack [target]</code></td><td>Fake, harmless "breach sequence" animation for laughs.</td></tr>
+        <tr><td class="cmd"><code>admin</code></td><td>Enter admin mode after a warning screen (and passcode, if one is set). <code>admin help</code> lists its subcommands.</td></tr>
+        <tr><td class="cmd"><code>exit</code></td><td>Leave DOS Mode or admin mode if active; otherwise log out of GioTux entirely.</td></tr>
+        <tr><td class="cmd"><code>shutdown</code></td><td>Shut down the real computer for real, after typing YES to confirm.</td></tr>
+      </table>
+    </div>
+
+    <div class="ref-group">
+      <h3>Admin mode (type <code>admin</code> first, or use <code>admin &lt;cmd&gt;</code> directly)</h3>
+      <table class="ref">
+        <tr><td class="cmd"><code>admin status</code></td><td>Show whether GioTux is running elevated, whether admin mode is active, and whether a passcode is set.</td></tr>
+        <tr><td class="cmd"><code>admin elevate</code></td><td>Relaunch GioTux with a UAC elevation prompt.</td></tr>
+        <tr><td class="cmd"><code>admin restart</code></td><td>Restart the computer (confirmation required).</td></tr>
+        <tr><td class="cmd"><code>admin shutdown</code></td><td>Shut down the computer (confirmation required).</td></tr>
+        <tr><td class="cmd"><code>admin lock</code></td><td>Lock the workstation immediately.</td></tr>
+        <tr><td class="cmd"><code>admin users</code></td><td>List local Windows user accounts.</td></tr>
+        <tr><td class="cmd"><code>admin services</code></td><td>List all installed services and their state.</td></tr>
+        <tr><td class="cmd"><code>admin service start/stop &lt;name&gt;</code></td><td>Start or stop a specific Windows service.</td></tr>
+        <tr><td class="cmd"><code>admin firewall status</code></td><td>Show the Windows Firewall state for all profiles.</td></tr>
+        <tr><td class="cmd"><code>admin firewall on</code></td><td>Enable the Windows Firewall.</td></tr>
+        <tr><td class="cmd"><code>admin firewall off</code></td><td>Disable the Windows Firewall (confirmation required).</td></tr>
+        <tr><td class="cmd"><code>admin dns flush</code></td><td>Flush the local DNS resolver cache.</td></tr>
+        <tr><td class="cmd"><code>admin network reset</code></td><td>Reset IP and Winsock networking (confirmation required; needs a reboot after).</td></tr>
+        <tr><td class="cmd"><code>admin defender scan</code></td><td>Start a Windows Defender quick scan.</td></tr>
+        <tr><td class="cmd"><code>admin updates</code></td><td>Open the Windows Update settings page.</td></tr>
+        <tr><td class="cmd"><code>admin temp clean</code></td><td>Delete files in your TEMP folder (confirmation required).</td></tr>
+        <tr><td class="cmd"><code>admin logs</code></td><td>Open Event Viewer.</td></tr>
+        <tr><td class="cmd"><code>admin gpupdate</code></td><td>Force a Group Policy update.</td></tr>
+        <tr><td class="cmd"><code>admin env refresh</code></td><td>Reload PATH from the registry for the current session.</td></tr>
+        <tr><td class="cmd"><code>admin disks</code></td><td>Show a table of disk volumes.</td></tr>
+        <tr><td class="cmd"><code>admin checkdisk &lt;drive&gt;</code></td><td>Run <code>chkdsk</code> on the given drive.</td></tr>
+        <tr><td class="cmd"><code>admin repair</code></td><td>Run <code>sfc /scannow</code> to repair system files.</td></tr>
+        <tr><td class="cmd"><code>admin restorehealth</code></td><td>Run DISM's <code>/RestoreHealth</code> to repair the Windows component store.</td></tr>
+        <tr><td class="cmd"><code>admin ownership &lt;path&gt;</code></td><td>Take ownership of a file or folder (recursively).</td></tr>
+        <tr><td class="cmd"><code>admin permissions &lt;path&gt;</code></td><td>View the ACL permissions on a file or folder.</td></tr>
+        <tr><td class="cmd"><code>admin setpass</code></td><td>Set or change the encrypted admin-mode passcode.</td></tr>
+        <tr><td class="cmd"><code>admin removepass</code></td><td>Remove the saved passcode (must already be in admin mode).</td></tr>
+      </table>
+    </div>
+
+    <div class="ref-group">
+      <h3>ADB / Fastboot mode</h3>
+      <table class="ref">
+        <tr><td class="cmd"><code>devices</code></td><td>List connected Android devices.</td></tr>
+        <tr><td class="cmd"><code>shell</code></td><td>Open an interactive shell on the connected device.</td></tr>
+        <tr><td class="cmd"><code>install [apk]</code></td><td>Install an APK onto the device.</td></tr>
+        <tr><td class="cmd"><code>uninstall [package]</code></td><td>Uninstall a package from the device.</td></tr>
+        <tr><td class="cmd"><code>push [local] [remote]</code></td><td>Copy a file from your PC to the device.</td></tr>
+        <tr><td class="cmd"><code>pull [remote] [local]</code></td><td>Copy a file from the device to your PC.</td></tr>
+        <tr><td class="cmd"><code>reboot</code></td><td>Reboot the connected device normally.</td></tr>
+        <tr><td class="cmd"><code>reboot bootloader</code></td><td>Reboot the device straight into the bootloader.</td></tr>
+        <tr><td class="cmd"><code>logcat</code></td><td>Stream the device's system log.</td></tr>
+        <tr><td class="cmd"><code>get-state</code></td><td>Show the current ADB connection state.</td></tr>
+        <tr><td class="cmd"><code>fastboot devices</code></td><td>List devices currently in fastboot mode.</td></tr>
+        <tr><td class="cmd"><code>fastboot flash [part] [file]</code></td><td>Flash an image file to a bootloader partition.</td></tr>
+        <tr><td class="cmd"><code>fastboot reboot</code></td><td>Reboot the device out of fastboot mode.</td></tr>
+        <tr><td class="cmd"><code>fastboot reboot-bootloader</code></td><td>Reboot back into the bootloader.</td></tr>
+        <tr><td class="cmd"><code>fastboot getvar [var]</code></td><td>Read a bootloader variable's value.</td></tr>
+        <tr><td class="cmd"><code>fastboot erase [part]</code></td><td>Erase a bootloader partition.</td></tr>
+        <tr><td class="cmd"><code>exit</code></td><td>Leave ADB mode and return to the normal GioTux prompt.</td></tr>
+      </table>
+    </div>
+
+    <div class="ref-group">
+      <h3>.gtux app scripting directives</h3>
+      <table class="ref">
+        <tr><td class="cmd"><code>echo [text]</code></td><td>Print text to the screen.</td></tr>
+        <tr><td class="cmd"><code>cls</code></td><td>Clear the screen.</td></tr>
+        <tr><td class="cmd"><code>title [text]</code></td><td>Set the console window title.</td></tr>
+        <tr><td class="cmd"><code>color [code]</code></td><td>Set the console background/text color.</td></tr>
+        <tr><td class="cmd"><code>wait [seconds]</code></td><td>Pause execution for roughly the given number of seconds.</td></tr>
+        <tr><td class="cmd"><code>pause</code></td><td>Wait silently for a keypress.</td></tr>
+        <tr><td class="cmd"><code>cowsay [text]</code></td><td>Print the ASCII cow saying the given text.</td></tr>
+        <tr><td class="cmd"><code>set [name] [value]</code></td><td>Store a literal text value in an app variable.</td></tr>
+        <tr><td class="cmd"><code>calc [name] [expr]</code></td><td>Store the result of an arithmetic expression, e.g. <code>calc tries tries+1</code>.</td></tr>
+        <tr><td class="cmd"><code>random [name] [max]</code></td><td>Store a random whole number from 1 to <code>max</code> (default 100).</td></tr>
+        <tr><td class="cmd"><code>input [name] [prompt]</code></td><td>Ask the user a question and store their answer.</td></tr>
+        <tr><td class="cmd"><code>goto [label]</code></td><td>Jump unconditionally to a <code>:label</code> line in the app.</td></tr>
+        <tr><td class="cmd"><code>if [var] [op] [val] goto [label]</code></td><td>Conditional jump; <code>op</code> is one of EQU, NEQ, GTR, LSS, GEQ, LEQ.</td></tr>
+        <tr><td class="cmd"><code>exit</code></td><td>End the app immediately.</td></tr>
+      </table>
+    </div>
   </section>
 
   <footer>
