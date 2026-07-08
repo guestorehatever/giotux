@@ -349,6 +349,7 @@
       <a href="#try">try it</a>
       <a href="#download">download</a>
       <a href="releases.html">releases</a>
+      <a href="faq.html">faq</a>
     </div>
   </div>
 </div>
@@ -432,7 +433,7 @@
         ⬇ Download GioTux
       </a>
       <p class="req">Requires Windows with cmd.exe (built in). PowerShell is used for a few extras like ginfo and the fullscreen switch — also built in on any modern Windows install. The gui command needs Python installed separately.</p>
-      <p class="req">Looking for older builds or a changelog? See the <a href="releases.html">releases page</a>.</p>
+      <p class="req">Looking for older builds or a changelog? See the <a href="releases.html">releases page</a>. Got questions? Check the <a href="faq.html">FAQ</a>.</p>
     </div>
   </section>
 
@@ -556,6 +557,7 @@ const responses = {
   fortune           random GioTux fortune cookie
   matrix            matrix rain in the terminal
   sudo              try it and see
+  faq               open the FAQ page
   clear / cls       clear the screen
   exit              log out`,
   ls: () => `Documents/   Downloads/   Desktop/\ngiotux_notes.txt   .giotux_colors.cfg`,
@@ -567,6 +569,7 @@ const responses = {
   fortune: () => fortunes[Math.floor(Math.random() * fortunes.length)],
   matrix: () => Array.from({length: 5}, () => Array.from({length: 40}, () => Math.round(Math.random())).join('')).join('\n'),
   sudo: () => "gio: sudo what? you have no power here.",
+  faq: () => { window.location.href = 'faq.html'; return 'Opening the FAQ page...'; },
   clear: () => "__CLEAR__",
   cls: () => "__CLEAR__",
   exit: () => "Logging out of GioTux...",

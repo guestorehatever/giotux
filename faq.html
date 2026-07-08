@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GioTux — FAQ</title>
+<style>
+  :root{
+    --bg: #0a0d0a;
+    --bg-raised: #0f1310;
+    --amber: #4aff6a;
+    --amber-dim: #2f9e46;
+    --amber-faint: #163c22;
+    --green: #4aff6a;
+    --text: #d8d3c0;
+    --text-dim: #7d8a78;
+    --line: #24291f;
+    --danger: #ff5c4d;
+    --mono: ui-monospace, "Cascadia Mono", "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* CRT scanline + vignette overlay */
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    pointer-events:none;
+    z-index: 50;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0.10) 3px
+    );
+    mix-blend-mode: multiply;
+    opacity: 0.5;
+  }
+  body::after{
+    content:"";
+    position: fixed; inset:0;
+    pointer-events:none;
+    z-index: 49;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,0.55) 100%);
+  }
+
+  a{ color: var(--amber); }
+
+  .wrap{
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  ::selection{ background: var(--amber); color: #04150a; }
+
+  /* ---------- Top chrome bar ---------- */
+  .chrome{
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-raised);
+    position: sticky;
+    top:0;
+    z-index: 40;
+  }
+  .chrome-inner{
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 10px 24px;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    font-size: 13px;
+  }
+  .chrome-dots{ display:flex; gap:7px; }
+  .dot{ width:11px; height:11px; border-radius:50%; }
+  .dot.r{ background:#5a2b26; }
+  .dot.y{ background:#5a4a1e; }
+  .dot.g{ background:#26491f; }
+  .chrome-title{ color: var(--text-dim); letter-spacing: 0.5px; }
+  .chrome-nav{ display:flex; gap:20px; }
+  .chrome-nav a{ color: var(--text-dim); text-decoration:none; }
+  .chrome-nav a:hover{ color: var(--amber); }
+  .chrome-nav a.active{ color: var(--amber); }
+
+  /* ---------- Page header ---------- */
+  .pagehead{
+    padding: 56px 0 36px;
+    border-bottom: 1px solid var(--line);
+  }
+  .cmdline{
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 22px;
+  }
+  .cmdline .p{ color: var(--green); }
+  .cmdline .a{ color: var(--amber); }
+  h1{
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 10px;
+    letter-spacing: 0.3px;
+  }
+  h1 .prompt{ color: var(--green); }
+  .lede{ color: var(--text-dim); font-size: 14px; max-width: 62ch; margin:0; }
+
+  section{ padding: 44px 0; border-bottom: 1px solid var(--line); }
+  section:last-of-type{ border-bottom:none; }
+  h2{
+    font-size: 15px;
+    color: var(--amber-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 18px;
+  }
+
+  /* ---------- FAQ accordion ---------- */
+  .faq-item{
+    border: 1px solid var(--line);
+    background: var(--bg-raised);
+    margin-bottom: 10px;
+  }
+  .faq-item summary{
+    cursor: pointer;
+    list-style: none;
+    padding: 16px 20px;
+    font-size: 14.5px;
+    color: var(--text);
+    display:flex;
+    align-items:center;
+    gap: 12px;
+  }
+  .faq-item summary::-webkit-details-marker{ display:none; }
+  .faq-item summary .q{ color: var(--green); flex-shrink:0; }
+  .faq-item summary .arrow{
+    margin-left: auto;
+    color: var(--text-dim);
+    transition: transform .15s ease;
+    flex-shrink:0;
+  }
+  .faq-item[open] summary .arrow{ transform: rotate(90deg); color: var(--amber); }
+  .faq-item summary:hover{ background: rgba(74,255,106,0.04); }
+  .faq-item .a-body{
+    padding: 0 20px 20px 20px;
+    color: var(--text-dim);
+    font-size: 13.5px;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+  .faq-item .a-body p{ margin: 0 0 10px; }
+  .faq-item .a-body p:last-child{ margin-bottom:0; }
+  .faq-item .a-body code{
+    color: var(--amber);
+    background: rgba(74,255,106,0.06);
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-size: .92em;
+  }
+  .faq-item .a-body ul{ margin: 6px 0; padding-left: 20px; }
+  .faq-item .a-body li{ margin: 4px 0; }
+
+  footer{
+    padding: 30px 0 60px;
+    color: var(--text-dim);
+    font-size: 12.5px;
+  }
+  footer .p{ color: var(--green); }
+
+  @media (max-width: 620px){
+    .faq-item summary{ font-size: 13.5px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="chrome-inner">
+    <div class="chrome-dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+    <div class="chrome-title">::GTX::&gt; C:\Users\you\faq</div>
+    <div class="chrome-nav">
+      <a href="index.html#features">features</a>
+      <a href="index.html#try">try it</a>
+      <a href="index.html#download">download</a>
+      <a href="releases.html">releases</a>
+      <a href="faq.html" class="active">faq</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section class="pagehead">
+    <div class="cmdline"><span class="p">::GTX::&gt;</span> <span class="a">cat</span> FAQ.md</div>
+    <h1><span class="prompt">::GTX::&gt;</span> Frequently Asked Questions</h1>
+    <p class="lede">Everything below comes straight from how GioTux actually works under the hood. Click a question to expand it.</p>
+  </section>
+
+  <section>
+    <h2>General</h2>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> What is GioTux, exactly?</summary>
+      <div class="a-body">
+        <p>GioTux is a single <code>.bat</code> file that turns Command Prompt into a themed, Linux-flavored shell. When you launch it, it boots like a small OS — mounting a "filesystem," loading "drivers," dropping a custom color theme, then expanding to fill the screen — and lands you on a <code>::GTX::&gt;</code> prompt.</p>
+        <p>There's no virtual machine and nothing is replaced behind the scenes. It's still your real Command Prompt, running real commands against your real files and processes underneath the theme.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> Does it actually do anything, or is it just a reskin?</summary>
+      <div class="a-body">
+        <p>It's a working shell, not just a paint job. Commands like <code>ls</code>, <code>cd</code>, <code>cat</code>, <code>grep</code>, <code>find</code>, <code>ps</code>, <code>kill</code>, <code>ipconfig</code>, and <code>df</code> all run against your actual system — they list real files, kill real processes, and read your real network config.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> What platforms does it run on?</summary>
+      <div class="a-body">
+        <p>Windows only, since it's built entirely out of batch scripting plus a bit of PowerShell for extras (system info, the fullscreen switch, secure password prompts). Both come standard on any modern Windows install — nothing extra to install for the core shell.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> How do I get out of GioTux?</summary>
+      <div class="a-body">
+        <p>Type <code>exit</code>. If you're in admin mode or DOS mode it drops you back to the normal prompt first; typing it again (or from the normal prompt) logs you out cleanly and closes the window. <code>shutdown</code> is a different, much more serious command — see below.</p>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <h2>Shell &amp; files</h2>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> What file commands are available?</summary>
+      <div class="a-body">
+        <p>The core set covers everyday file work: <code>ls</code> / <code>list</code> (and <code>dir</code> for your current path), <code>pwd</code>, <code>cd</code>, <code>mkdir</code>, <code>rmdir</code> (add <code>-r</code> for non-empty folders), <code>touch</code>, <code>rm</code> (also supports <code>-r</code>), <code>cp</code>, <code>mv</code>, and <code>cat</code>.</p>
+        <p>On top of that there's <code>grep [text] [file]</code> to search inside a file, <code>find [name]</code> to search by filename from the current directory down, and <code>history</code> to see what you've typed.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> Is there a text editor?</summary>
+      <div class="a-body">
+        <p>Yes — <code>nano</code> or <code>vi</code> both open a bundled editor for the file you name. It needs a <code>nano.exe</code> sitting in a <code>nano\</code> folder next to GioTux; if it's missing, GioTux tells you instead of failing silently.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> What system-info commands are there?</summary>
+      <div class="a-body">
+        <p><code>whoami</code>, <code>hostname</code>, <code>date</code>, and <code>uptime</code> give you the basics. <code>ps</code> lists running processes and <code>kill [PID]</code> stops one. <code>df</code> shows disk space, and <code>ping [host]</code> / <code>ipconfig</code> cover networking.</p>
+        <p><code>ginfo</code> is the standout: a full-screen dashboard showing OS, hostname, terminal, user, CPU, GPU, and memory, plus a live ANSI color test — press ENTER to return to the shell.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> Can I open files or programs from the prompt?</summary>
+      <div class="a-body">
+        <p><code>open [file or program]</code> launches it with whatever app Windows has set as the default — same as double-clicking it in Explorer.</p>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <h2>.gtux apps &amp; games</h2>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> What's a .gtux app?</summary>
+      <div class="a-body">
+        <p>A tiny scripting format GioTux interprets line by line. It supports <code>echo</code>, <code>cls</code>, <code>title</code>, <code>color</code>, <code>wait</code>, <code>pause</code>, <code>cowsay</code>, <code>set</code> (variables), <code>calc</code>, <code>random</code>, <code>input</code>, conditional <code>if</code> statements with <code>goto</code>, and <code>exit</code> — enough to build a small branching program, not just a script that prints top to bottom.</p>
+        <p>Run one with <code>run [appname]</code> (or just type the app's name directly), and see everything installed in the current folder or next to GioTux with <code>apps</code>.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> How do games work?</summary>
+      <div class="a-body">
+        <p>Drop a batch-based game directly into a <code>games\</code> folder that sits next to <code>GioTux.bat</code> — GioTux creates that folder automatically if it doesn't exist. Then run it with <code>game [filename]</code>. It launches in its own separate console window, so it never touches GioTux's own shell, and it can only ever point at files that live directly inside <code>games\</code> — no paths, slashes, or drive letters allowed in the name.</p>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <h2>Admin mode</h2>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> What does admin mode actually let me do?</summary>
+      <div class="a-body">
+        <p>Real system-level controls, gated behind a confirmation screen: restarting or shutting down the computer, locking the workstation, listing users, starting/stopping services, toggling the firewall, flushing DNS, resetting networking, kicking off a Defender scan, opening Windows Update, cleaning temp files, opening Event Viewer, forcing a Group Policy update, refreshing environment variables, checking disks, running <code>sfc /scannow</code> or DISM's <code>RestoreHealth</code>, and managing file ownership/permissions.</p>
+        <p>Type <code>admin</code> to unlock it (after acknowledging a warning screen), or run <code>admin help</code> any time to see the full command list.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> Is admin mode dangerous to turn on by accident?</summary>
+      <div class="a-body">
+        <p>It's built to make that hard. Entering it always shows a warning screen you have to explicitly accept, and if you've set a passcode (see below), that's required too. Individual destructive actions — like <code>shutdown</code>, disk repairs, or removing a passcode — ask for a separate confirmation on top of that. Nothing fires without you saying yes at least once, usually twice.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> Can I lock admin mode behind a passcode?</summary>
+      <div class="a-body">
+        <p>Yes — <code>admin setpass</code> sets a password or PIN. It's encrypted with Windows' own Data Protection API and tied to your specific Windows user account, so the saved file can't be read or reused by anyone else, even on the same machine. The file is also locked down (hidden, read-only, delete-denied) and can only be changed or removed through <code>admin setpass</code> / <code>admin removepass</code> while already in admin mode.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> What happens if I enter the wrong passcode?</summary>
+      <div class="a-body">
+        <p>You get three attempts. Get all three wrong and GioTux locks you out of admin mode for that session — no bypassing it from the shell.</p>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <h2>ADB / Fastboot &amp; other modes</h2>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> Does GioTux include Android device tools?</summary>
+      <div class="a-body">
+        <p>Yes. Typing <code>adb</code> with no arguments drops you into a dedicated ADB/Fastboot console with its own prompt and <code>help</code> screen — commands like <code>devices</code>, <code>shell</code>, <code>install</code>, <code>uninstall</code>, <code>push</code>, <code>pull</code>, <code>reboot</code>, and <code>logcat</code>, plus <code>fastboot</code>-prefixed commands for flashing partitions, reading bootloader variables, and rebooting. You can also run a single command directly with <code>adb [args]</code> without entering the full mode.</p>
+        <p>It looks for platform-tools in <code>C:\platform-tools</code>; if it's missing, GioTux tells you and opens the official Android developer download page.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> What's the difference between "cmd" mode and just closing GioTux?</summary>
+      <div class="a-body">
+        <p><code>cmd</code> switches you into a real, unmodified black-and-white console — genuine DOS-style Command Prompt — while GioTux's own commands (<code>ls</code>, <code>ginfo</code>, <code>admin</code>, etc.) keep working alongside whatever native Windows commands you run. Typing <code>exit</code> from there brings back the themed prompt. It's a safety net for when you need the unmodified console without leaving GioTux entirely.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> What's the "gui" command?</summary>
+      <div class="a-body">
+        <p><code>gui</code> launches a companion Python desktop app (<code>giotux_gui.py</code>) that's expected to sit next to <code>GioTux.bat</code>. It requires Python to be installed and on your PATH — GioTux checks for both and tells you plainly if either is missing rather than failing silently.</p>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <h2>Customization &amp; fun stuff</h2>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> Can I change the colors?</summary>
+      <div class="a-body">
+        <p><code>customize</code> walks you through picking a background and text color from the standard 16-color console palette, and the choice is saved permanently to a small config file in your user profile — it's restored automatically every time you boot GioTux. Run <code>customize default</code> to reset back to the classic light-green-on-black look.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> What are the "just for fun" commands?</summary>
+      <div class="a-body">
+        <ul>
+          <li><code>cowsay [text]</code> — an ASCII cow says whatever you typed</li>
+          <li><code>fortune</code> — a random developer-flavored fortune cookie</li>
+          <li><code>matrix</code> — ambient falling-character rain in the terminal (Ctrl+C to stop)</li>
+          <li><code>sudo [command]</code> — a harmless, joking "permission granted" wrapper</li>
+          <li><code>hack [target]</code> — a fake, harmless "breach sequence" for laughs</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> I heard there's a hidden command. Is that true?</summary>
+      <div class="a-body">
+        <p>Yes — there's a secret easter egg triggered by a specific sequence typed at the prompt. We're not going to spoil it here. If you find it, you'll know.</p>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <h2>Safety &amp; data</h2>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> Does GioTux leave anything behind when I exit?</summary>
+      <div class="a-body">
+        <p>Typing <code>exit</code> from the normal prompt logs out cleanly. The only thing that persists between sessions is the small color-preference file mentioned above (and, if you've set one, the encrypted admin passcode file) — both live quietly in your user profile.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> Will any command shut down or restart my computer without warning?</summary>
+      <div class="a-body">
+        <p>No. The real <code>shutdown</code> command and admin mode's <code>restart</code>/<code>shutdown</code> subcommands all require you to type an explicit confirmation before anything happens. Nothing destructive fires without you confirming first.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span class="q">Q.</span> Does GioTux need an internet connection?</summary>
+      <div class="a-body">
+        <p>No — the core shell works fully offline. A couple of specific commands reach out to the network on purpose: <code>ping</code> (obviously), the ADB download link if platform-tools isn't found, and the hidden easter egg's final step, which fetches a small ASCII animation if <code>curl</code> is available.</p>
+      </div>
+    </details>
+  </section>
+
+  <footer>
+    <span class="p">::GTX::&gt;</span> cd ..<br>
+    Back to <a href="index.html">index.html</a>.
+  </footer>
+
+</div>
+
+</body>
+</html>
