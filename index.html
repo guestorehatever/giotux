@@ -280,9 +280,65 @@
     .logo{ font-size: 6.5px; }
     .frow{ grid-template-columns: 70px 1fr; }
   }
+
+  /* Mobile/tablet warning overlay */
+  #mobile-warning{
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(4,6,4,.92);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  #mobile-warning[hidden]{ display: none; }
+  #mobile-warning .mw-box{
+    width: 100%;
+    max-width: 400px;
+    background: var(--bg-raised);
+    border: 1px solid var(--danger);
+    border-radius: 6px;
+    padding: 24px 22px;
+    box-shadow: 0 0 40px rgba(255,92,77,.15);
+  }
+  #mobile-warning .mw-title{
+    color: var(--danger);
+    font-size: 13px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+  #mobile-warning .mw-msg{
+    color: var(--text);
+    font-size: 14.5px;
+    line-height: 1.55;
+    margin: 0 0 20px;
+  }
+  #mobile-warning .mw-msg .p{ color: var(--green); }
+  #mobile-warning .btn.mw-continue{
+    width: 100%;
+    justify-content: center;
+    display: inline-flex;
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+  #mobile-warning .btn.mw-continue:hover{
+    background: var(--danger);
+    color: #04150a;
+  }
 </style>
 </head>
 <body>
+
+<div id="mobile-warning" hidden>
+  <div class="mw-box">
+    <p class="mw-title">⚠ warning</p>
+    <p class="mw-msg"><span class="p">::GTX::&gt;</span> This website is not really made for phones/tablets.</p>
+    <button type="button" class="btn mw-continue" id="mw-continue-btn">Continue anyway</button>
+  </div>
+</div>
 
 <div class="chrome">
   <div class="chrome-inner">
@@ -388,6 +444,25 @@
 </div>
 
 <script>
+// ---------------- Mobile/tablet warning ----------------
+(function mobileWarning(){
+  const overlay = document.getElementById('mobile-warning');
+  const btn = document.getElementById('mw-continue-btn');
+  if (!overlay || !btn) return;
+
+  const isPhoneWidth = window.matchMedia('(max-width: 600px)').matches;
+
+  if (isPhoneWidth){
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  btn.addEventListener('click', () => {
+    overlay.hidden = true;
+    document.body.style.overflow = '';
+  });
+})();
+
 // ---------------- Boot sequence ----------------
 const bootLines = [
   { text: "GioTux booting...", delay: 400 },
