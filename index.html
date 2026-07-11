@@ -499,11 +499,103 @@ function typeBoot(i) {
     const ctas = document.createElement('div');
     ctas.className = 'hero-ctas';
     ctas.innerHTML = `
-      <a class="btn primary" href="https://github.com/guestorehatever/giotux/releases/download/New-Releases/GioTuxInstaller1.0.exe" download>⬇ Download GioTux</a>
+      <a class="btn primary" href="#download">⬇ Download GioTux</a>
       <a class="btn ghost" href="#try">try the shell →</a>
       <a class="btn ghost" href="releases.html">all releases →</a>
     `;
     bootEl.appendChild(ctas);
+
+    const gwpBanner = document.createElement('div');
+    gwpBanner.style.whiteSpace = 'normal';
+    gwpBanner.innerHTML = `
+      <a href="https://gios-projects.pages.dev" target="_blank" rel="noopener"
+         style="text-decoration:none; display:block; max-width:728px; margin:28px auto 0;">
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+          .gwp-banner {
+            font-family: 'VT323', 'Courier New', monospace;
+            background-color: #000033;
+            background-image:
+              radial-gradient(circle at 8% 30%,  #fff 0px, #fff 1px, transparent 1px),
+              radial-gradient(circle at 70% 70%, #fff 0px, #fff 1px, transparent 1px),
+              radial-gradient(circle at 40% 15%, #99ccff 0px, #99ccff 1px, transparent 1px),
+              radial-gradient(circle at 88% 40%, #99ccff 0px, #99ccff 1px, transparent 1px),
+              radial-gradient(circle at 22% 80%, #fff 0px, #fff 1px, transparent 1px);
+            background-size: 70px 70px;
+            border: 4px ridge #3399ff;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            white-space: normal;
+          }
+          .gwp-logo {
+            flex-shrink: 0;
+            font-size: 1.9em;
+            font-weight: bold;
+            line-height: 1;
+            color: #ffff00;
+            text-shadow: 2px 2px 0 #0066ff, -1px -1px 0 #00cc44;
+            white-space: nowrap;
+            text-align: center;
+          }
+          .gwp-logo .gwp-star {
+            color: #ff3333;
+            animation: gwp-blink 1s step-start infinite;
+          }
+          @keyframes gwp-blink { 50% { opacity: 0; } }
+          @media (prefers-reduced-motion: reduce) {
+            .gwp-logo .gwp-star { animation: none; }
+          }
+          .gwp-divider {
+            width: 2px;
+            align-self: stretch;
+            background: repeating-linear-gradient(180deg, #00cc44 0 6px, #ffcc00 6px 12px, #3399ff 12px 18px);
+            flex-shrink: 0;
+          }
+          .gwp-desc {
+            color: #00ff00;
+            font-size: 1.15em;
+            line-height: 1.3;
+          }
+          .gwp-desc .gwp-cta {
+            color: #33aaff;
+            font-weight: bold;
+          }
+          .gwp-btn {
+            flex-shrink: 0;
+            display: inline-block;
+            font-family: 'VT323', 'Courier New', monospace;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #fff;
+            background: #0000cc;
+            border: 2px outset #6699ff;
+            padding: 8px 16px;
+            white-space: nowrap;
+          }
+          .gwp-banner:hover .gwp-btn {
+            background: #0000ff;
+          }
+          .gwp-banner:active .gwp-btn {
+            border-style: inset;
+          }
+        </style>
+        <div class="gwp-banner">
+          <div class="gwp-logo">
+            <span class="gwp-star">&#9733;</span> GIO'S<br>WACKY<br>PROJECTS
+          </div>
+          <div class="gwp-divider"></div>
+          <div class="gwp-desc">
+            Hi, I'm Gio — a programmer messing with tech since I was 4.
+            HTML, Python, retro AV, console modding &amp; more.
+          </div>
+          <div class="gwp-btn">ENTER SITE &rarr;</div>
+        </div>
+      </a>
+    `;
+    bootEl.appendChild(gwpBanner);
     return;
   }
   const line = bootLines[i];
