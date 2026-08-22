@@ -217,8 +217,35 @@
 
     <div class="release">
       <div class="release-head">
-        <h3>v1.0</h3>
+        <h3>v2.0</h3>
         <span class="release-current">current</span>
+        <span class="release-date">Major release</span>
+      </div>
+      <p class="release-lead">Second major release: pipes and aliases, 40+ new commands, real-time games, a package manager, and a rebuilt app engine.</p>
+
+      <div class="filelist">
+        <div class="frow"><span class="perm">added</span><span class="fdesc"><span class="fname">shell pipes</span> — <span class="muted">run commands right-to-left with</span> <span class="fname">a | b</span> <span class="muted">(multi-pipe chains supported), chain commands on one line with</span> <span class="fname">a ; b</span>, <span class="muted">and define your own with</span> <span class="fname">alias / unalias / which</span>.</span></div>
+        <div class="frow"><span class="perm">added</span><span class="fdesc"><span class="fname">text tools</span> — <span class="muted">big block-letter</span> <span class="fname">banner</span>, <span class="muted">a live fullscreen</span> <span class="fname">clock</span>, <span class="muted">plus</span> <span class="fname">head, tail, wc, sort, diff, tree</span>.</span></div>
+        <div class="frow"><span class="perm">added</span><span class="fdesc"><span class="fname">encoding &amp; checksums</span> — <span class="muted">SHA-256 via</span> <span class="fname">sha</span>, <span class="muted">CRC-32 via</span> <span class="fname">crc</span>, <span class="muted">and</span> <span class="fname">encode / decode / base64</span> <span class="muted">for base64 conversion.</span></span></div>
+        <div class="frow"><span class="perm">added</span><span class="fdesc"><span class="fname">files &amp; archives</span> — <span class="muted">permanent delete with</span> <span class="fname">shred</span>, <span class="muted">zip/unzip archives, and folder sizes via</span> <span class="fname">du</span>.</span></div>
+        <div class="frow"><span class="perm">added</span><span class="fdesc"><span class="fname">system tools</span> — <span class="muted">memory usage with</span> <span class="fname">free</span>, <span class="muted">Linux-style</span> <span class="fname">uname</span> <span class="muted">and</span> <span class="fname">neofetch</span>, <span class="muted">shell variables via</span> <span class="fname">set</span>, <span class="muted">math via</span> <span class="fname">calc</span>, <span class="muted">plus</span> <span class="fname">elevate, reboot, logout, sleep</span>.</span></div>
+        <div class="frow"><span class="perm">added</span><span class="fdesc"><span class="fname">desktop &amp; media</span> — <span class="muted">Windows notification balloons via</span> <span class="fname">notify</span>, <span class="fname">beep</span> <span class="muted">with frequency control, a startup</span> <span class="fname">setwall</span> <span class="muted">wallpaper, a .wav</span> <span class="fname">music</span> <span class="muted">player, countdown</span> <span class="fname">timer</span>, <span class="fname">stopwatch</span> <span class="muted">with laps, and live</span> <span class="fname">weather [city]</span> <span class="muted">via wttr.in.</span></span></div>
+        <div class="frow"><span class="perm">added</span><span class="fdesc"><span class="fname">games</span> — <span class="muted">real-time</span> <span class="fname">snake</span> <span class="muted">(arrow keys/WASD, pause, restart),</span> <span class="fname">trivia</span> <span class="muted">quiz,</span> <span class="fname">rock</span> <span class="muted">paper scissors,</span> <span class="fname">roll</span> <span class="muted">with drawn dice faces,</span> <span class="fname">coin</span> <span class="muted">flips, and</span> <span class="fname">matrix</span> <span class="muted">rain.</span></span></div>
+        <div class="frow"><span class="perm">added</span><span class="fdesc"><span class="fname">package manager</span> — <span class="muted">install, list, and remove .gtux apps with</span> <span class="fname">package install/list/remove</span> <span class="muted">(aka</span> <span class="fname">apt</span><span class="muted">).</span></span></div>
+        <div class="frow"><span class="perm">changed</span><span class="fdesc"><span class="fname">app engine</span> — <span class="muted">.gtux apps now expand variables in</span> <span class="fname">echo</span>, <span class="muted">so set/input/calc values display inside apps; a 20,000-step guard stops infinite loops.</span></span></div>
+        <div class="frow"><span class="perm">changed</span><span class="fdesc"><span class="fname">core rebuild</span> — <span class="muted">every command rebuilt as a call-safe subroutine on top of a new dispatcher that powers pipes and chaining; help reference rewritten; cowsay gained a</span> <span class="fname">cowthink</span> <span class="muted">sibling.</span></span></div>
+        <div class="frow"><span class="perm">kept</span><span class="fdesc"><span class="fname">from v1.0</span> — <span class="muted">admin mode with encrypted passcode, ADB/fastboot mode, DOS mode, color customizer, games launcher, Python GUI, saved themes.</span></span></div>
+      </div>
+
+      <div class="release-actions">
+        <a class="btn" href="https://github.com/guestorehatever/giotux/releases/download/giotux/GioTuxInstaller2.0.exe" download>⬇ Download GioTuxInstaller2.0.exe</a>
+        <span class="release-file">Windows · requires cmd.exe</span>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-head">
+        <h3>v1.0</h3>
         <span class="release-date">Initial release</span>
       </div>
       <p class="release-lead">First public release of GioTux.</p>
@@ -244,11 +271,12 @@
   </section>
 
   <footer>
-    <span class="p">::GTX::&gt;</span> cd ..<br>
+    <span class="p">::GTX::&gt;</span> cd ..
+
     <a href="index.html">Back to home</a>
   </footer>
 
 </div>
 
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f2f4572b53a69c',t:'MTc4NzQxMzAwMA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
