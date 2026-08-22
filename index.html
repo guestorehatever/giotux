@@ -362,7 +362,7 @@
 
   <section id="features">
     <div class="cmdline"><span class="p">::GTX::&gt;</span> <span class="a">ls</span> -la features/</div>
-    <h2><span class="num">01</span> &nbsp;What it actually is</h2>
+    <h2><span class="num">01</span>  What it actually is</h2>
     <p class="section-sub">GioTux boots straight into its own shell environment — a persistent command set, its own app format, and a couple of modes to drop back into standard Windows tools when you need them.</p>
     <div class="filelist">
       <div class="frow"><span class="perm">drwxr-xr-x</span><span class="fdesc"><span class="fname">core-shell</span> — <span class="muted">a persistent</span> ::GTX::&gt; prompt with <span class="muted">ls, cd, mkdir, rm, cp, mv, cat, nano, touch, find, grep</span> and more, working against your real filesystem.</span></div>
@@ -377,7 +377,7 @@
 
   <section>
     <div class="cmdline"><span class="p">::GTX::&gt;</span> <span class="a">cat</span> why.txt</div>
-    <h2><span class="num">02</span> &nbsp;Why it exists</h2>
+    <h2><span class="num">02</span>  Why it exists</h2>
     <div class="grid">
       <div class="card">
         <div class="tag">No install weirdness</div>
@@ -404,7 +404,7 @@
 
   <section id="try">
     <div class="cmdline"><span class="p">::GTX::&gt;</span> <span class="a">run</span> demo.gtux</div>
-    <h2><span class="num">03</span> &nbsp;Try the shell right here</h2>
+    <h2><span class="num">03</span>  Try the shell right here</h2>
     <p class="section-sub">A preview of the prompt, right here in your browser. Type a command below.</p>
     <div class="term">
       <div class="term-bar">
@@ -423,13 +423,13 @@
   </section>
 
   <section id="download">
-    <div class="cmdline"><span class="p">::GTX::&gt;</span> <span class="a">curl</span> -O GioTuxInstaller1.0.exe</div>
-    <h2><span class="num">04</span> &nbsp;Get GioTux</h2>
+    <div class="cmdline"><span class="p">::GTX::&gt;</span> <span class="a">curl</span> -O GioTuxInstaller2.0.exe</div>
+    <h2><span class="num">04</span>  Get GioTux</h2>
     <div class="dl-box">
       <div class="dl-terminal-line">
-        <span class="p">::GTX::&gt;</span> sudo apt install GioTuxInstaller1.0.exe <span class="cursor"></span>
+        <span class="p">::GTX::&gt;</span> sudo apt install GioTuxInstaller2.0.exe <span class="cursor"></span>
       </div>
-      <a class="btn primary" href="https://github.com/guestorehatever/giotux/releases/download/New-Releases/GioTuxInstaller1.0.exe" download>
+      <a class="btn primary" href="https://github.com/guestorehatever/giotux/releases/download/giotux/GioTuxInstaller2.0.exe" download>
         ⬇ Download GioTux
       </a>
       <p class="req">Requires Windows with cmd.exe (built in). PowerShell is used for a few extras like ginfo and the fullscreen switch — also built in on any modern Windows install. The gui command needs Python installed separately.</p>
@@ -438,7 +438,8 @@
   </section>
 
   <footer>
-    <span class="p">::GTX::&gt;</span> shutdown<br>
+    <span class="p">::GTX::&gt;</span> shutdown
+
     Logging out of GioTux... session ended. Come back any time.
   </footer>
 
@@ -477,8 +478,8 @@ const logoArt = `   █████████   ███           ███�
   ███▒▒▒▒▒███ ▒▒▒           ▒█▒▒▒███▒▒▒█
  ███     ▒▒▒  ████   ██████ ▒   ▒███  ▒  █████ ████ █████ █████
 ▒███         ▒▒███  ███▒▒███    ▒███    ▒▒███ ▒███ ▒▒███ ▒▒███
-▒███    █████ ▒███ ▒███ ▒███    ▒███     ▒███ ▒███  ▒▒▒█████▒
-▒▒███  ▒▒███  ▒███ ▒███ ▒███    ▒███     ▒███ ▒███   ███▒▒▒███
+▒███    █████ ▒▒███ ▒███ ▒███    ▒███     ▒███ ▒███  ▒▒▒█████▒
+▒▒███  ▒▒███  ▒▒███ ▒███ ▒███    ▒███     ▒███ ▒███   ███▒▒▒███
  ▒▒█████████  █████▒▒██████     █████    ▒▒████████ █████ █████
  ▒▒▒▒▒▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒▒▒     ▒▒▒▒▒      ▒▒▒▒▒▒▒▒ ▒▒▒▒▒ ▒▒▒▒▒`;
 
@@ -493,7 +494,7 @@ function typeBoot(i) {
 
     const tag = document.createElement('div');
     tag.className = 'tagline';
-    tag.innerHTML = 'GioTux [version 1.0] — <span class="prompt">a terminal that runs your Windows machine like an OS of its own.</span><span class="cursor"></span>';
+    tag.innerHTML = 'GioTux [version 2.0] — <span class="prompt">a terminal that runs your Windows machine like an OS of its own.</span><span class="cursor"></span>';
     bootEl.appendChild(tag);
 
     const ctas = document.createElement('div');
@@ -584,7 +585,9 @@ function typeBoot(i) {
         </style>
         <div class="gwp-banner">
           <div class="gwp-logo">
-            <span class="gwp-star">&#9733;</span> GIO'S<br>WACKY<br>PROJECTS
+            <span class="gwp-star">&#9733;</span> GIO'S
+WACKY
+PROJECTS
           </div>
           <div class="gwp-divider"></div>
           <div class="gwp-desc">
@@ -708,5 +711,5 @@ input.addEventListener('keydown', (e) => {
 document.querySelector('.term').addEventListener('click', () => input.focus());
 </script>
 
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f2f40a9e2da69c',t:'MTc4NzQxMjk4OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
